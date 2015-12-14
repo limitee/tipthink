@@ -293,10 +293,17 @@ CurSite.to_page = function(config, page, cb) {
         CurSite.get_js(js_path, function(err, data) {
             var f = new Function(data);
             config.DEFINE = f();
-            config.ins = new config.DEFINE({parent:config.parent, pins:config.pins});
+            config.ins = new config.DEFINE({parent:config.parent, pins:config.pins, add:config.add});
             if(cb) {
                 cb(err, null);
             }
         });
     });
 };
+
+//mix the src's properties to target
+CurSite.mix = function(target, src) {
+    for(var key in src) {
+        target[key] = src[key];
+    }
+}

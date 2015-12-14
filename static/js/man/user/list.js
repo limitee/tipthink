@@ -4,6 +4,10 @@ var Com = function(config) {
     self.parent = self.config.parent;
 	//子页面
 	self.cr = {
+        'pagebar': {
+            pins: self,
+            parent: self.parent.children('#pagebar')
+        }
 	};
     self.skip = 0;
     self.limit = 10;
@@ -25,7 +29,13 @@ Com.prototype.init = function() {
     };
     CurSite.postDigest({cmd:"U03"}, body, function(err, back_body)
     {
-        dom_user_list.html(self.get_table(back_body.data));
+       dom_user_list.html(self.get_table(back_body.data));
+       self.cr.pagebar.add = {
+           skip: self.skip,
+           limit: self.limit,
+           total: back_body.count
+       }
+       CurSite.to_page(self.cr.pagebar, "sys_pagebar");
     });
 };
 
