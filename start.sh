@@ -1,0 +1,1 @@
+nohup ./target/release/hyper_test > log.out 2>&1 &

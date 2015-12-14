@@ -1,0 +1,56 @@
+extern crate hyper;
+
+use std::io::Write;
+
+use hyper::Server;
+use hyper::server::Request;
+use hyper::server::Response;
+use hyper::net::Fresh;
+use hyper::uri::RequestUri;
+
+use std::sync::{Arc, Mutex};
+
+struct MyServer {
+    count: u64,
+}
+
+impl MyServer {
+
+    fn start(&self) {
+        let count = Mutex::new(0);
+        //Server::http("127.0.0.1:3000").unwrap().handle(MyServer::hello);
+        Server::http("127.0.0.1:3000").unwrap().handle(move |req: Request, res:Response|
+        {
+            let mut data = count.lock().unwrap();
+            println!("the count is {}.", *data);
+            *data += 1;
+        }).unwrap();
+    }
+
+    fn hello(req: Request, res: Response<Fresh>) {
+        println!("{}", req.method);
+        match req.uri {
+            RequestUri::AbsolutePath(path) => {
+                println!("the path is {}.", path);
+            },
+            _ => {},
+        }
+
+        //hi代表了一个头部的键值对
+        for hi in req.headers.iter() {
+            //println!("{}.", hi);
+            let name = hi.name();
+            let value = hi.value_string();
+            println!("key: {}, value: {}.", name, value);
+        }
+        println!("{:?}", req.headers);
+        res.send(b"Hello World!").unwrap();
+    }
+}
+
+fn main() {
+    let my_server = MyServer{count:0};
+    my_server.start();
+}
+
+

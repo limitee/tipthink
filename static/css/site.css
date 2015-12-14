@@ -1,0 +1,7 @@
+div {
+    word-break:break-all;
+}
+
+.no_space {
+    padding: 0px;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <link href="./css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="./css/bootstrap-theme.min.css" rel="stylesheet"/>
+        <link href="./css/site.css" rel="stylesheet"/>
+
+        <!--[if lt IE 9]>
+        <script src="./js/html5shiv.min.js"></script>
+        <script src="./js/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+    <body>
+
+        <div class="container" style="font-size:20px;">
+            <div class="row">
+                <div class="col-md-2">
+                    <img src="./img/logo.png" width="120px"/>
+                </div>
+                <div class="col-md-7" style="padding-top:8px;">
+                    酒泉市温度: <span id="temp"></span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    天气: <span id="detail"></span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    风力: <span id="wind"></span>
+                </div>
+                <div class="col-md-3" style="height:40px;">
+                    &nbsp;
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 no_space">
+                    <div class="list-group">
+                        <a class="list-group-item active" href="#" tUrl="nor_index">首页</a>
+                        <a class="list-group-item" href="#" tUrl="nor_intro">饭店简介</a>
+                        <a class="list-group-item" href="#" tUrl="nor_room">舒适客房</a>
+                        <a class="list-group-item" href="#" tUrl="nor_eat">餐饮美食</a>
+                        <a class="list-group-item" href="#" tUrl="nor_meeting">会议宴会</a>
+                        <a class="list-group-item" href="#" tUrl="nor_fun">春晖园</a>
+                        <a class="list-group-item" href="#" tUrl="nor_save">优惠及活动</a>
+                        <a class="list-group-item" href="#" tUrl="nor_pos">交通位置</a>
+                        <a class="list-group-item" href="#" tUrl="nor_contact">联系我们</a>
+                    </div>
+                </div>
+                <div id="content" class="col-md-10 no_space">
+                </div>
+            </div>
+        </div>
+        <div class="container" style="text-align:center;margin-top:120px;">
+            客房电话 0937-XXXXXXX 订餐电话 0937-XXXXXXX
+        </div>
+        <div class="container" style="text-align:center;">
+            酒泉饭店版权所有  酒泉博思兰网络科技有限公司 技术支持 甘ICP备####号
+        </div>
+        <script type="text/javascript" src="./js/cryptojs/rollups/tripledes.js"></script>
+        <script type="text/javascript" src="./js/cryptojs/rollups/md5.js"></script>
+        <script type="text/javascript" src="./js/cryptojs/components/enc-base64.js"></script>
+        <script type="text/javascript" src="./js/cryptojs/components/mode-cfb.js"></script>
+        <script type="text/javascript" src="./js/cryptojs/components/pad-nopadding.js"></script>
+        <script type="text/javascript" src="./js/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="./js/site.js"></script>
+
+        <script type="text/javascript">
+            CurSite.get_js("index.js", function(err, data){
+                var f = new Function(data);
+                var com = {};
+                com.DEFINE = f();
+                com.ins = new com.DEFINE({parent:null});
+                CurSite.IMPL.ROOT = com;
+            });
+        </script>
+
+    </body>
+</html>
