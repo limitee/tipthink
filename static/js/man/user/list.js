@@ -18,7 +18,13 @@ var Com = function(config) {
 
 Com.prototype.init = function() {
 	var self = this;
-    var dom_user_list = self.parent.find('#user_list');
+    self.dom_user_list = self.parent.find('#user_list');
+    self.to_page(1);
+};
+
+Com.prototype.to_page = function(index) {
+    var self = this;
+    self.skip = (index - 1)*self.limit;
     var cond = JSON.stringify(self.cond);
     var sort = JSON.stringify(self.sort);
     var body = {
@@ -29,7 +35,7 @@ Com.prototype.init = function() {
     };
     CurSite.postDigest({cmd:"U03"}, body, function(err, back_body)
     {
-       dom_user_list.html(self.get_table(back_body.data));
+       self.dom_user_list.html(self.get_table(back_body.data));
        self.cr.pagebar.add = {
            skip: self.skip,
            limit: self.limit,
@@ -37,7 +43,7 @@ Com.prototype.init = function() {
        }
        CurSite.to_page(self.cr.pagebar, "sys_pagebar");
     });
-};
+}
 
 Com.prototype.get_table = function(data) {
     var self = this;
