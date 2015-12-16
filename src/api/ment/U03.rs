@@ -41,8 +41,16 @@ impl DataApi for U03 {
     {
         let table = db.get_table("customer").expect("st table not exists.");
         let cond = json_str!(msg; "body", "cond");
+        let limit = json_i64!(msg; "body", "limit");
+        let offset = json_i64!(msg; "body", "offset");
+        let op = format!(r#"
+            {{
+                "offset":{},
+                "limit":{}
+            }}
+        "#, offset, limit);
         let c_data = try!(table.count_by_str(cond, "{}"));
-        let mut data = table.find_by_str(cond, "{}", "{}");
+        let mut data = table.find_by_str(cond, "{}", &op);
         {
             let count = json_i64!(&c_data; "data", "0", "count");
             json_set!(&mut data;"count";count);

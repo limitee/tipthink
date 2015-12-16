@@ -10,7 +10,7 @@ var Com = function(config) {
         }
 	};
     self.skip = 0;
-    self.limit = 10;
+    self.limit = 4;
     self.sort = {};
     self.cond = {};
 	self.init();
@@ -30,7 +30,7 @@ Com.prototype.to_page = function(index) {
     var body = {
         cond: cond,
         sort: sort,
-        skip: self.skip,
+        offset: self.skip,
         limit: self.limit
     };
     CurSite.postDigest({cmd:"U03"}, body, function(err, back_body)
@@ -47,7 +47,7 @@ Com.prototype.to_page = function(index) {
 
 Com.prototype.get_table = function(data) {
     var self = this;
-    var html = '<table class="table table-striped table-bordered table-hover">';
+    var html = '<table class="table table-striped table-hover">';
     html += '<thead><tr><td>用户名</td><td>类型</td><td>注册时间</td></tr></thead>';
     html += '<tbody>';
     for(var i = 0; i < data.length; i++) {

@@ -40,12 +40,21 @@ impl DataApi for F01 {
     fn run(&self, db:&DataBase<MyDbPool>, msg:&Json) -> Result<Json, i32> 
     {
         let table = db.get_table("file").expect("file table not exists.");
-        let c_data = table.count_by_str("{}", "{}").unwrap();
-        println!("{}", c_data);
-        let mut data = table.find_by_str("{}", "{}", "{}");
-        {
-            let mut data_obj = data.as_object_mut().unwrap();
-            data_obj.insert("count".to_string(), json_i64!(&c_data; "data", "0", "count").to_json());
+        let cond = json_str!(msg; "body", "cond");
+        let limit = json_i64!(msg; "body", "limit");
+        let offset = json_i64!(msg; "body", "offset");
+        let op = format!(r#"
+            {{
+                "offset":{},
+                "limit":{}
+            }}
+        "#, offset, limit);
+        let c_data = try!(table.count_by_str(cond, "{}"));
+
+        let mut data = table.find_by_str(cond, "{}", &op);
+        { 
+            let count = json_i64!(&c_data; "data", "0", "count");
+            json_set!(&mut data;"count";count);
         }
         Result::Ok(data)
     }
