@@ -1,7 +1,9 @@
+#[macro_use]
+extern crate easy_util;
+
 extern crate hyper;
 
 use std::rc::Rc;
-use std::str::FromStr;
 
 use std::sync::Mutex;
 use std::sync::Arc;
@@ -31,6 +33,7 @@ use hyper_test::cons::CONS;
 extern crate rustc_serialize;
 use self::rustc_serialize::json::Json;
 use self::rustc_serialize::json::ToJson;
+use std::str::FromStr;
 
 /**
  * the uri type of the request.
@@ -85,10 +88,10 @@ impl SenderHandler {
             }}
         "#, file_id);
         let file = file_table.find_one_by_str(&cond, "{}", "{}").unwrap();
-        let customer_id = file.find_path(&["customer_id"]).unwrap().as_i64().unwrap();
-        let file_type = file.find_path(&["type"]).unwrap().as_i64().unwrap();
-        let file_size = file.find_path(&["size"]).unwrap().as_i64().unwrap();
-        let file_name = file.find_path(&["name"]).unwrap().as_string().unwrap();
+        let customer_id = json_i64!(&file; "customer_id");
+        let file_type = json_i64!(&file; "type");
+        let file_size = json_i64!(&file; "size");
+        let file_name = json_str!(&file; "name");
         let file_size_str = format!("{}", file_size);
         let disp = format!("attachment; filename={}", file_name); 
         let ct_type = CONS.id_to_code("file_type", file_type as i32).unwrap();
@@ -137,17 +140,10 @@ impl SenderHandler {
         }
         let back = match self.api.check(&(self.db), &req_map) {
             Ok(ref msg) => {
-                let uuid = {
-                    let msg_obj = msg.as_object().unwrap();
-                    let body_obj = msg_obj.get("body").unwrap().as_object().unwrap();
-                    body_obj.get("uuid").unwrap().as_string().unwrap()
-                };
+                let uuid = json_str!(msg; "body", "uuid");
                 let mut body_json = self.api.run(&(self.db), msg).unwrap();
                 //set uuid value to the body.
-                {
-                    let mut body_json_obj = body_json.as_object_mut().unwrap();
-                    body_json_obj.insert("uuid".to_string(), uuid.to_json());
-                }
+                json_set!(&mut body_json; "uuid"; uuid);
                 let body_str = body_json.to_string();
                 self.api.back(msg, body_str)
             },

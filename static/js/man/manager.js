@@ -18,9 +18,9 @@ Com.prototype.init = function() {
         CurSite.to_page(self.cr.main, "man_file_list");
     });
     
-    self.dom_save_info = $('#save_info');
-    self.dom_save_info.on('click', function(e) {
-        CurSite.to_page(self.cr.main, "man_save_list");
+    self.dom_book_type = $('#book_type');
+    self.dom_book_type.on('click', function(e) {
+        CurSite.to_page(self.cr.main, "man_book_typelist");
     });
 
     self.dom_my_files = $('#upload_files');

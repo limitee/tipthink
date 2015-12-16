@@ -190,6 +190,19 @@ impl<T:DbPool> DataBase<T> {
             let table = DataBase::get_table_define("save_info", vec, dc);
             table_list.insert(table.name.clone(), table);
         }
+        {   //the book_type table
+            let dc = dc.clone();
+            let vec = vec![
+                Column::new("id", "bigserial", -1, "PRIMARY KEY", false),
+                Column::new("name", "varchar", 40, "", true),
+                Column::new("create_time", "bigint", -1, "default -1", false),
+                Column::new("index", "int", -1, "default -1", false),
+                Column::new("version", "int", -1, "default -1", false),
+            ];
+            let table = DataBase::get_table_define("book_type", vec, dc);
+            table_list.insert(table.name.clone(), table);
+        }
+
         for (name, table) in table_list.iter() {
             println!("{}", table.to_ddl_string());
         }
