@@ -23,6 +23,11 @@ Com.prototype.init = function() {
         CurSite.to_page(self.cr.main, "man_book_typelist");
     });
 
+    self.dom_book_type = $('#book_type_add');
+    self.dom_book_type.on('click', function(e) {
+        CurSite.to_page(self.cr.main, "man_book_addtype");
+    });
+
     self.dom_my_files = $('#upload_files');
     self.dom_my_files.on('click', function(e) {
         CurSite.to_page(self.cr.main, "man_file_upload");

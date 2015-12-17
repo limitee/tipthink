@@ -62,7 +62,7 @@ impl DataApi for U02 {
             //exits, update the last_active_time
             if(old_st_rows > 0)
             {
-                let data = json_path!(&old_st; "data");
+                let data = json_path!(&old_st; "data", "0");
                 let mut st = json_str!(data; "st").to_string();
                 let last_active_time = json_i64!(data; "last_active_time");
                 let sec = time::get_time().sec;

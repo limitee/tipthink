@@ -36,6 +36,7 @@ use self::ment::F02::F02;
 use self::ment::F03::F03;
 use self::ment::SV01::SV01;
 use self::ment::BKT01::BKT01;
+use self::ment::BKT02::BKT02;
 
 pub struct ApiFactory {
     map:BTreeMap<String, Box<DataApi>>,
@@ -54,6 +55,7 @@ impl ApiFactory {
         map.insert("F03".to_string(), Box::new(F03) as Box<DataApi>);
         map.insert("SV01".to_string(), Box::new(SV01) as Box<DataApi>);
         map.insert("BKT01".to_string(), Box::new(BKT01) as Box<DataApi>);
+        map.insert("BKT02".to_string(), Box::new(BKT02) as Box<DataApi>);
         ApiFactory {
             map:map,
         }

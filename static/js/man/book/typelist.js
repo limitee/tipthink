@@ -52,10 +52,15 @@ Com.prototype.to_page = function(index) {
 Com.prototype.get_table = function(data) {
     var self = this;
     var html = '<table class="table table-striped table-hover">';
-    html += '<thead><tr><td>id</td><td>名称</td><td>创建时间</td></tr></thead>';
+    html += '<thead><tr><td>id</td><td>名称</td><td>创建时间</td><td>操作<td></tr></thead>';
     html += '<tbody>';
     for(var i = 0; i < data.length; i++) {
-        html += '<tr><td>' + data[i].id + '</td><td>' + data[i].name + '</td><td>' + CurSite.getDateStr(data[i].reg_time*1000) + '</td></tr>';
+        html += '<tr><td>' + data[i].id + '</td><td>' + data[i].name + '</td><td>' + CurSite.getDateStr(data[i].reg_time*1000) + '</td>'
+        + '<td>'
+        + '<a>上移</a>' 
+        + '<a>下移</a>'
+        + '</td>'
+        + '</tr>';
     }
     html += '</tbody>';
     html += '</table>';

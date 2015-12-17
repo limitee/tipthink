@@ -196,7 +196,7 @@ impl<T:DbPool> DataBase<T> {
                 Column::new("id", "bigserial", -1, "PRIMARY KEY", false),
                 Column::new("name", "varchar", 40, "", true),
                 Column::new("create_time", "bigint", -1, "default -1", false),
-                Column::new("index", "int", -1, "default -1", false),
+                Column::new("index", "serial", -1, "", false),
                 Column::new("version", "int", -1, "default -1", false),
             ];
             let table = DataBase::get_table_define("book_type", vec, dc);
