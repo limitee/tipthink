@@ -74,7 +74,8 @@ Com.prototype.change = function(id, index, up_or_down) {
     }
     CurSite.postDigest({cmd:"BKT03"}, body, function(err, back_body)
     {
-        console.log(back_body);
+        var cur = self.skip/self.limit + 1;
+        self.to_page(cur);
     });
 }
 

@@ -43,6 +43,50 @@ impl DataApi for BKT03 {
         let book_type_id = json_i64!(msg; "body", "id");
         let up_or_down = json_i64!(msg; "body", "up_or_down");
         let index = json_i64!(msg; "body", "index");
+        let t_index = index + up_or_down;
+        let rst = {
+            let cond = format!(r#"
+                {{
+                    "index":{}
+                }}
+            "#, t_index);
+            let doc = format!(r#"
+                {{
+                    "$set":
+                    {{
+                        "index":{}
+                    }}
+                }}
+            "#, index);
+            let op = r#"
+                {
+                   "ret": 
+                   {
+                       "id": 1
+                   }
+                }
+            "#;
+            let data = table.update_by_str(&cond, &doc, &op);
+            println!("{}", data);
+            let row = json_i64!(&data; "rows");
+            row
+        };
+        if rst > 0 {
+            let cond = format!(r#"
+                {{
+                    "id":{}
+                }}
+            "#, book_type_id);
+            let doc = format!(r#"
+                {{
+                    "$set":
+                    {{
+                        "index":{}
+                    }}
+                }}
+            "#, t_index);
+            table.update_by_str(&cond, &doc, "{}");
+        }
         Result::Ok(json!("{}"))
     }
 
