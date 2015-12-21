@@ -13,26 +13,11 @@ var Com = function(config) {
 
 Com.prototype.init = function() {
     var self = this;
-    self.temp_dom = $("#temp");
-    self.detail_dom = $("#detail");
-    self.wind_dom = $("#wind");
-
-    $("a.list-group-item").click(function(event) {
-        $(this).parent().find(".active").removeClass("active");
-        $(this).addClass("active");
-        var url = $(this).attr("tUrl");
-        CurSite.to_page(self.cr.main, url);
-    });
-
-    CurSite.postUnDigest({cmd:"W01"}, {}, function(err, data){
+    CurSite.postUnDigest({cmd:"GBT01"}, {}, function(err, data){
+        console.log(data);
         if(data) {
-            self.temp_dom.html(data.temp);
-            self.detail_dom.html(data.detail);
-            self.wind_dom.html(data.wind);
         }
     });
-
-    CurSite.to_page(self.cr.main, "nor_index");
 };
 
 return Com;
