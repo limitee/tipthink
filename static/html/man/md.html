@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12" style="height:328px;">
+        <div class="col-md-12" style="height:368px;">
             &nbsp;
         </div>
     </div>
@@ -39,24 +39,28 @@
                     模式 <span class="caret"></span>
                     </button>
                         <ul class="dropdown-menu">
-                            <li><a href="#">滚动</a></li>
-                            <li><a href="#">自由</a></li>
+                            <li><a id="mode_scroll" href="#">滚动</a></li>
+                            <li><a id="mode_free" href="#">自由</a></li>
                         </ul>
                 </div>
                 </div>
                 <div class="row">
-                    <textarea id="text-input" oninput="update()" style="width: 100%;height:300px;">Type **Markdown** here.</textarea>
+                    <textarea id="text_input" style="width: 100%;height:288px;">Type **Markdown** here.</textarea>
                 </div>
                 <div class="row" style="padding-top:6px;padding-bottom:6px;">
-                模式：<span>滚动</span>
+                模式：<span id="mode_panel">滚动</span>
                 </div>
             </div>
-            <div class="col-md-6">
-                <form class="form">
-                    <label for="infer" class="sr-only">链接地址</label>
+            <div class="col-md-6" style="padding-top:6px;padding-bottom:6px;">
+                <ul class="nav nav-tabs">
+                    <li role="presentation" class="active"><a href="#">外部参考</a></li>
+                    <li role="presentation"><a href="#">帮助</a></li>
+                </ul>
+                <div>
                     <input type="text" id="infer" class="form-control" placeholder="参考地址"/>
-                </form>
-                <iframe src="" width="100%" height="260px" frameborder="no" border="0"></iframe>
+                </div>
+                <div id="infer_frame">
+                <div>
             </div>
         </div>
     </div>
@@ -69,16 +73,14 @@
 <script type="text/javascript" src="./js/site.js"></script>
 <script type="text/javascript" src="./js/markdown.min.js"></script>
 <script type="text/javascript" src="./js/mkdown/index.js"></script>
-
 <script type="text/javascript">
-    var input = $("#text-input");
-    var preview = $("#preview");
-    var update = function() {
-        preview.html(mk.to_html(input.val()));
-        var mydiv = $('#main');
-        mydiv.scrollTop(mydiv.prop('scrollHeight'));
-    }
-    update();
+    CurSite.get_js("man/md.js", function(err, data){
+        var f = new Function(data);
+        var com = {};
+        com.DEFINE = f();
+        com.ins = new com.DEFINE({parent:null});
+        CurSite.IMPL.ROOT = com;
+    });
 </script>
 </body>
 </html>
