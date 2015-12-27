@@ -18,6 +18,7 @@ extern crate url;
 
 use hyper::server::{Handler, Server, Request, Response};
 use hyper::uri::RequestUri;
+use hyper::status::StatusCode;
 
 use hyper::header::{Headers, ContentType};
 use hyper::mime::{Mime, TopLevel, SubLevel};
@@ -34,6 +35,9 @@ extern crate rustc_serialize;
 use self::rustc_serialize::json::Json;
 use self::rustc_serialize::json::ToJson;
 use std::str::FromStr;
+
+extern crate filetime;
+use filetime::FileTime;
 
 /**
  * the uri type of the request.
@@ -164,23 +168,21 @@ impl SenderHandler {
         let mut res = res.start().unwrap();
         res.write_all(back_str.as_bytes()).unwrap();
 
-        //hi代表了一个头部的键值对
-        /*
-        for hi in req.headers.iter() {
-            //println!("{}.", hi);
-            let name = hi.name();
-            let value = hi.value_string();
-            println!("key: {}, value: {}.", name, value);
-        }
-        */
     }
 
     /**
      * static file.
      */
     pub fn static_file(&self, req: Request, mut res: Response, path:&str) {
+        let mut f = File::open(path).unwrap();
+        let metadata = f.metadata().unwrap();
+        let mtime = FileTime::from_last_modification_time(&metadata);
+        let m_seconds = mtime.seconds();
         {
+            let m_seconds_str = format!("{}", m_seconds);
             let mut headers = res.headers_mut();
+            headers.set_raw("Last-Modified", vec![m_seconds_str.into_bytes()]);
+            headers.set_raw("Cache-Control", vec!["max-age=60, must-revalidate".to_string().into_bytes()]);
             if path.ends_with(".js") {
                 headers.set(
                     ContentType(Mime(TopLevel::Application, SubLevel::Javascript, vec![]))
@@ -192,17 +194,50 @@ impl SenderHandler {
                 );
             }
         }
-        let mut res = res.start().unwrap();
-        let mut f = File::open(path).unwrap();
-        let mut read_size = 0;
-        let mut buffer = [0; 1000];
-        loop {
-            read_size = f.read(&mut buffer).unwrap();
-            if read_size == 0 {
-                break;
+        let send_content = {
+            let ifms = req.headers.get_raw("If-Modified-Since");
+            match ifms {
+                Some(x) => {
+                    let lmt_str = String::from_utf8(x.get(0).unwrap().clone()).unwrap();
+                    let cache_time = u64::from_str(&lmt_str).unwrap();
+                    if m_seconds > cache_time {
+                        true 
+                    } else {
+                        false
+                    }
+                },
+                None => {
+                    true
+                }
             }
-            res.write_all(&buffer[0..read_size]).unwrap();
+        };
+        
+        if send_content {
+            let mut res = res.start().unwrap();
+            let mut read_size = 0;
+            let mut buffer = [0; 1000];
+            loop {
+                read_size = f.read(&mut buffer).unwrap();
+                if read_size == 0 {
+                    break;
+                }
+                res.write_all(&buffer[0..read_size]).unwrap();
+            }
+        } else {
+            let mut status = res.status_mut();
+            *status = StatusCode::NotModified;
         }
+                
+        /*
+        //hi代表了一个头部的键值对
+        for hi in req.headers.iter() {
+            //println!("{}.", hi);
+            let name = hi.name();
+            let value = hi.value_string();
+            println!("key: {}, value: {}.", name, value);
+        }
+        */
+        
     }
 
     /**
@@ -292,13 +327,13 @@ impl Handler for SenderHandler {
 
 fn main() {
     let dsn = "postgresql://postgres:1988lm@localhost/tipthink";
-    let my_pool:MyDbPool = MyDbPool::new(dsn, 1);
+    let my_pool:MyDbPool = MyDbPool::new(dsn, 5);
     let my_db = DataBase::new("main", Arc::new(my_pool));
     let api = ApiFactory::new();
 
-    Server::http("0.0.0.0:3000").unwrap().handle(SenderHandler {
+    Server::http("0.0.0.0:3000").unwrap().handle_threads(SenderHandler {
         db: my_db,
         api: api,
-    }).unwrap();
+    }, 20).unwrap();
 
 }

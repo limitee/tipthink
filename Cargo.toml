@@ -12,6 +12,7 @@ url = "0.2.37"
 rust-crypto = "0.2.34"
 time = "0.1.32"
 regex = "0.1.41"
+filetime = "0.1"
 
 lazy_static = { git = "https://github.com/rust-lang-nursery/lazy-static.rs.git" }
 
