@@ -271,6 +271,9 @@ impl Handler for SenderHandler {
                 println!("the path is {}.", path);
                 if path == "/" {
                     UriType::HtmlFile("/index.html".to_string())
+                } 
+                else if path == "/favicon.ico" {
+                    UriType::StaticFile("./static/favicon.ico".to_string())
                 }
                 else if path.starts_with("/js") || path.starts_with("/css") || path.starts_with("/fonts") || path.starts_with("/img")
                 {
