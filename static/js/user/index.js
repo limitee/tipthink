@@ -13,31 +13,12 @@ var Com = function(config) {
 
 Com.prototype.init = function() {
     var self = this;
-    self.dom_my_files = $('#my_files');
+    self.dom_my_files = $('#user_info');
     self.dom_my_files.on('click', function(e) {
-        CurSite.to_page(self.cr.main, "man_file_list");
+        CurSite.to_page(self.cr.main, "user_info");
     });
     
-    self.dom_book_type = $('#book_type');
-    self.dom_book_type.on('click', function(e) {
-        CurSite.to_page(self.cr.main, "man_book_typelist");
-    });
-
-    self.dom_book_type = $('#book_type_add');
-    self.dom_book_type.on('click', function(e) {
-        CurSite.to_page(self.cr.main, "man_book_addtype");
-    });
-
-    self.dom_my_files = $('#upload_files');
-    self.dom_my_files.on('click', function(e) {
-        CurSite.to_page(self.cr.main, "man_file_upload");
-    });
-
-    self.dom_my_files = $('#customer');
-    self.dom_my_files.on('click', function(e) {
-        CurSite.to_page(self.cr.main, "man_user_list");
-    });
-    CurSite.to_page(self.cr.main, "man_user_list");
+    CurSite.to_page(self.cr.main, "user_info");
 };
 
 return Com;

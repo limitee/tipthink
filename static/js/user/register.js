@@ -14,31 +14,25 @@ Com.prototype.init = function() {
     self.dom_reg_bt = $("#reg_bt");
 
     self.dom_reg_bt.on("click", function(e){
-        var data = self.get_data();
-        CurSite.setCookie("userId", data.username, -1);
-        CurSite.setCookie("userType", "normal", -1);
-        var key = CryptoJS.MD5(data.password).toString(CryptoJS.enc.Hex);
-        CurSite.postDigest({cmd:"U02", key:key}, {}, function(err, data){
+        var data = self.get_form_data();
+        CurSite.postUnDigest({cmd:"U01"}, data, function(err, data){
             if(err) {
                 alert(err);
             }
             else
             {
-                CurSite.setCookie("userId", data.userId, -1);
-                CurSite.setCookie("st", data.st, -1);
-
-                window.location = "./user_index.html";
+                alert("注册成功");
             }
         });
     });
 };
 
-Com.prototype.get_data = function() {
+Com.prototype.get_form_data = function(){
     var self = this;
     var data = {};
     data.username = self.dom_username.val();
     data.password = self.dom_password.val();
     return data;
-}
+};
 
 return Com;
