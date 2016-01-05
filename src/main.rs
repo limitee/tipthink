@@ -199,11 +199,16 @@ impl SenderHandler {
             match ifms {
                 Some(x) => {
                     let lmt_str = String::from_utf8(x.get(0).unwrap().clone()).unwrap();
-                    let cache_time = u64::from_str(&lmt_str).unwrap();
-                    if m_seconds > cache_time {
-                        true 
+                    let cache_time_rst = u64::from_str(&lmt_str);
+                    if cache_time_rst.is_err() {
+                        true
                     } else {
-                        false
+                        let cache_time = cache_time_rst.unwrap();
+                        if m_seconds > cache_time {
+                            true 
+                        } else {
+                            false
+                        }
                     }
                 },
                 None => {

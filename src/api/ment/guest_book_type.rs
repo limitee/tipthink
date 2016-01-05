@@ -40,7 +40,14 @@ impl DataApi for GBT01 {
     fn run(&self, db:&DataBase<MyDbPool>, msg:&Json) -> Result<Json, i32> 
     {
         let table = db.get_table("book_type").expect("st table not exists.");
-        Result::Ok(json!("{}"))
+        let cond = json!("{}");
+        let doc = json!("{}");
+        let mut op = json!("{}");
+        let sort = vec![json!("{\"index\":1}")];
+        json_set!(op; "sort"; sort);
+        json_set!(op; "limit"; 5);
+        let data = table.find(&cond, &doc, &op);
+        Result::Ok(data)
     }
 
 }
