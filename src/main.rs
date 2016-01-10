@@ -39,6 +39,9 @@ use std::str::FromStr;
 extern crate filetime;
 use filetime::FileTime;
 
+extern crate chrono;
+use chrono::*;
+
 /**
  * the uri type of the request.
  */
@@ -177,11 +180,15 @@ impl SenderHandler {
         let mut f = File::open(path).unwrap();
         let metadata = f.metadata().unwrap();
         let mtime = FileTime::from_last_modification_time(&metadata);
-        let m_seconds = mtime.seconds();
+        let m_seconds = mtime.seconds_relative_to_1970();
         {
+            //let utc: DateTime<UTC> = UTC::now(); 
+            //let m_seconds_str = utc.to_rfc2822();
             let m_seconds_str = format!("{}", m_seconds);
+            let etag_str = format!("{}", m_seconds);
             let mut headers = res.headers_mut();
             headers.set_raw("Last-Modified", vec![m_seconds_str.into_bytes()]);
+            headers.set_raw("ETag", vec![etag_str.into_bytes()]);
             headers.set_raw("Cache-Control", vec!["max-age=60, must-revalidate".to_string().into_bytes()]);
             if path.ends_with(".js") {
                 headers.set(
@@ -201,7 +208,22 @@ impl SenderHandler {
                     let lmt_str = String::from_utf8(x.get(0).unwrap().clone()).unwrap();
                     let cache_time_rst = u64::from_str(&lmt_str);
                     if cache_time_rst.is_err() {
-                        true
+                        let dt_rst = DateTime::parse_from_rfc2822(&lmt_str);
+                        let send_content = match dt_rst {
+                            Ok(dt) => {
+                                let timestamp = dt.timestamp() as u64;
+                                //println!("change time:{}--{}", m_seconds, timestamp);
+                                if m_seconds > timestamp {
+                                    true
+                                } else {
+                                    false
+                                }
+                            },
+                            Err(_) => {
+                                true
+                            },
+                        };
+                        send_content 
                     } else {
                         let cache_time = cache_time_rst.unwrap();
                         if m_seconds > cache_time {
@@ -216,7 +238,6 @@ impl SenderHandler {
                 }
             }
         };
-        
         if send_content {
             let mut res = res.start().unwrap();
             let mut read_size = 0;
@@ -233,7 +254,7 @@ impl SenderHandler {
             *status = StatusCode::NotModified;
         }
                 
-        /*
+        /* 
         //hi代表了一个头部的键值对
         for hi in req.headers.iter() {
             //println!("{}.", hi);
@@ -241,7 +262,7 @@ impl SenderHandler {
             let value = hi.value_string();
             println!("key: {}, value: {}.", name, value);
         }
-        */
+        */ 
         
     }
 
