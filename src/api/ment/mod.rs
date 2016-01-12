@@ -10,4 +10,5 @@ pub mod BKT01;
 pub mod BKT02;
 pub mod BKT03;
 pub mod guest_book_type;
+pub mod user;
 

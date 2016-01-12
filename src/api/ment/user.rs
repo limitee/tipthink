@@ -23,13 +23,15 @@ use super::super::util::{KeyHelper};
 /**
  * index page, get the popular's book type.
  */
-pub struct GBT01;
+pub struct US01;
 
-impl DataApi for GBT01 {
+impl DataApi for US01 {
 
     fn get_key(&self, db:&DataBase<MyDbPool>, mut head:&Json) -> Result<String, i32> 
     {
-        Result::Ok(DigestUtil::empty_key())
+        let rst = KeyHelper::from_cache(db, head);
+        KeyHelper::active(db, head);
+        rst
     }
 
     fn check(&self, db:&DataBase<MyDbPool>, msg:&Json) -> Result<i32, i32> 
@@ -39,7 +41,7 @@ impl DataApi for GBT01 {
 
     fn run(&self, db:&DataBase<MyDbPool>, msg:&Json) -> Result<Json, i32> 
     {
-        let table = db.get_table("book_type").expect("st table not exists.");
+        let table = db.get_table("customer").expect("st table not exists.");
         Result::Ok(json!("{}"))
     }
 
