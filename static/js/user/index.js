@@ -18,6 +18,12 @@ Com.prototype.init = function() {
         CurSite.to_page(self.cr.main, "user_info");
     });
     
+    CurSite.postDigest({cmd:"US01"}, {}, function(err, back_body)
+    {
+        console.log(back_body);
+    });
+
+    
     CurSite.to_page(self.cr.main, "user_info");
 };
 
